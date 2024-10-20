@@ -2,24 +2,22 @@ pingHost = msg => {
   console.log('SpiderEvent:' + msg)
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.addEventListener('click', e => {
-
+document.addEventListener("DOMContentLoaded", function (event) {
+  document.addEventListener('click', function (e) {
     const event = {
-        clientX : e.clientX,
-        clientY: e.clientY,
-        layerX: e.layerX,
-        layerY: e.layerY,
-        pageX: e.pageX,
-        pageY: e.pageY,
-        screenX: e.screenX,
-        screenY: e.screenY,
-        pointerType: e.pointerType,
-        type: e.type,
-        x:e.x,
-        y:e.y
+        x:e.pageX,
+        y:e.pageY
     }
     const _event = JSON.stringify(event);
-    pingHost(_event);
+    console.log('click:' + _event)
   }, true);
+
+  document.addEventListener("mousemove", (e) => {
+    const event = {
+        x:e.pageX,
+        y:e.pageY
+    }
+    const _event = JSON.stringify(event);
+    console.log('move:' + _event)
+  });
 });

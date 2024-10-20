@@ -6,20 +6,31 @@
   <title>SpiderLilly</title>
 </head>
 <link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="./component.css">
 <body>
-  <div>
-    <div style="display:flex">
-      <input id="url" style="flex: 1" value="https://www.github.com/"> <button id="go">go</button>
+    <div class="container">
+        <div class="Tools-Container">
+            <div id="Record" class="button">Record</div>
+            <div id="Status"></div>
+        </div>
+        <div class="WebView-Container">
+                <div>
+                    <div></div>
+                    <webview id="web" 
+                    src="https://www.github.com/" 
+                    class="webview"
+                    preload="./preload.js"></webview>
+                    <div></div>
+                </div>
+        </div>
     </div>
-    <webview id="web" src="https://www.google.com/" style="width:100%;height:400px" preload="./preload.js">
-    </webview>
-    <div>
-      <p>code:</p>
-      <pre id="code">
-
-        </pre>
+  
+    <div class="testCode">
+      <p>Mouse:</p>
+      <pre id="code"></pre>
     </div>
-  </div>
+  <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="../helper/util.js"></script>
   <script src="index.js"></script>
 </body>
 

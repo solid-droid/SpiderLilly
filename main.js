@@ -1,13 +1,16 @@
-const { app, BrowserWindow } = require('electron');
-app.isPackaged || require('electron-reloader')(module)
-let win
+const { app, BrowserWindow, ipcMain  } = require('electron');
+const {beginPuppet, runSimulation } = require('./Simulation/app');
+app.isPackaged || require('electron-reloader')(module);
+const path = require('node:path')
+let win;
 
 function createWindow() {
   win = new BrowserWindow({
     width: 800, height: 600, webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: false,
+      contextIsolation: true,
       webviewTag: true,
-      contextIsolation: false,
+      preload: path.join(__dirname, 'preload.js')
     }
   })
   win.removeMenu();
@@ -15,7 +18,13 @@ function createWindow() {
   // win.webContents.openDevTools()
   win.on('closed', () => {
     win = null
-  })
+  });
+  ipcMain.on('runSimulation', async (...args)=>{
+    win.webContents.send('statusMessage', 'simulation started');
+    await runSimulation(...args);
+    setTimeout(r => win.webContents.send('statusMessage', 'simulation completed'), 100);
+  });
+  beginPuppet();
 }
 
 app.on('ready', createWindow)
