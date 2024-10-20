@@ -1,5 +1,12 @@
 {
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
   "dependencies": {
+    "electron": "^33.0.1",
+    "electron-reloader": "^1.2.3",
+    "jquery": "^3.7.1",
     "puppeteer": "^23.5.3",
     "puppeteer-core": "^23.5.3"
   }
