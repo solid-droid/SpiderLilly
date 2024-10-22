@@ -1,12 +1,35 @@
 .button{
-    background-color: rgb(191, 216, 216);
+    background-color: rgb(43, 43, 43);
     border: solid 1px rgb(117, 117, 117);
-    color: black;
-    width: fit-content;
+    color: rgb(221, 221, 221);
+    width: max-content;
     padding: 5px;
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 5px;
+    min-width: 80px;
     cursor: pointer;
-    box-shadow: 1px 1px 5px 1px rgb(117, 117, 117);
+    /* box-shadow: 1px 1px 5px 1px rgb(58, 58, 58); */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:hover{
+        outline: solid 2px rgb(117, 117, 117);
+        background-color: rgb(48, 56, 68);
+    }
+}
+
+
+.inputBox{
+    height: 25px;
+    color: white;
+    width:-webkit-fill-available;
+    background-color: rgb(37, 37, 37);
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    padding: 5px;
+    &:focus{
+        outline: rgb(110, 110, 110) 1px solid;
+    }
 }

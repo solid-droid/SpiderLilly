@@ -10,14 +10,44 @@
 <body>
     <div class="container">
         <div class="Tools-Container">
-            <div id="Record" class="button">Record</div>
-            <div id="Status"></div>
+           <div class="TestContainer">
+              <div class="helpText">Test Config File</div>
+              <input id="testConfigInput" class="inputBox" placeholder="Enter Test Config File Path"/>
+              <div class="testControls">
+                <div id="testButton" class="button">TEST</div>
+                <div id="compareButton" class="button">Compare</div>
+                <div id="viewButton" class="button">View Bug</div>
+              </div>
+           </div>
+           <div class="controlContainer">
+              <div class="helpText">URL</div>
+              <div class="urlBox">
+                <input id="urlInput" class="inputBox" placeholder="Enter Website URL" value="https://o9solutions.com/"/>
+                <div id="goButton" class="button">GO</div>
+              </div>
+
+              <div class="controls">
+                <div class="group g1">
+                  <div id="recButton" class="button">Rec</div>
+                  <div id="recModeButton" class="button">RECORD</div>
+                </div>
+                <div class="group">
+                  <div id="highlightModeButton" class="button">REPORT</div>
+                  <div id="penButton" class="button">Pen</div>
+                </div>
+              </div>
+           </div>
+           <div class="LogsContainer">
+              <div class="helpText">Output</div>
+              <input id="outputDir" class="inputBox" placeholder="Enter Output Dir Path"/>
+              <div id="logsBox"></div>
+           </div>
         </div>
         <div class="WebView-Container">
                 <div>
                     <div></div>
                     <webview id="web" 
-                    src="https://www.github.com/" 
+                    src="https://o9solutions.com/" 
                     class="webview"
                     preload="./preload.js"></webview>
                     <div></div>
@@ -26,7 +56,6 @@
     </div>
   
     <div class="testCode">
-      <p>Mouse:</p>
       <pre id="code"></pre>
     </div>
   <script src="../node_modules/jquery/dist/jquery.min.js"></script>

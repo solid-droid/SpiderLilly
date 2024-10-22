@@ -2,28 +2,97 @@ let recording = false;
 let FinalData = {};
 $(document).ready(() => {
   const webview = $('#web')
-  $('#Record').on('click',()=>{
-    recording = !recording;
-    if(!recording){
-        window.electronAPI.runSimulation({
-            url:'https://github.com/',
-            data:FinalData,
-            options:{
-                offsetY:50
-            }
-        });
-    } else {
-        $('#Status').text('Recording Started');
-    }
-    FinalData = {};
-  });
+
+  attachUIButtons(webview);
   attachEvents(webview);
 })
 
+function removeActive(){
+    $('#testButton').removeClass('active')
+    $('#recModeButton').removeClass('active')
+    $('#highlightModeButton').removeClass('active')
+    $('#compareButton').hide();
+    $('#viewButton').hide();
+    $('#recButton').hide();
+    $('#penButton').hide();
+}
+
+function getURL(){
+    let url = $('#urlInput').val();
+
+    if(!(url.startsWith('http://') || url.startsWith('https://'))){
+        url = 'https://'+ url;
+    } 
+    $('#urlInput').val(url);
+    return url;
+}
+
+function getOutputPath(){
+    return $('#outputDir').val();
+}
+
+function attachUIButtons(webview){
+    $('#goButton').on('click', ()=>{
+        webview[0].loadURL(getURL())
+    });
+
+    $('#urlInput').on('keyup', function (e) {
+        if (e.keyCode === 13) {
+            webview[0].loadURL(getURL())
+        }
+      })
+
+    $('#testButton').on('click', () => {
+        if(!$('#testButton').hasClass('active')){
+            removeActive();
+            $('#testButton').addClass('active');
+            $('#compareButton').show();
+            $('#viewButton').show();
+        }
+    });
+    $('#recModeButton').on('click', () => {
+        if(!$('#recModeButton').hasClass('active')){
+            removeActive();
+            $('#recModeButton').addClass('active');
+            $('#recButton').show();
+        }
+    });
+
+    $('#highlightModeButton').on('click', () => {
+        if(!$('#highlightModeButton').hasClass('active')){
+            removeActive();
+            $('#highlightModeButton').addClass('active');
+            $('#penButton').show();
+        }
+    });
+
+    $('#recButton').on('click',()=>{
+        recording = !recording;
+        if(!recording){
+            window.electronAPI.runSimulation({
+                url:getURL(),
+                data:FinalData,
+                output:getOutputPath(),
+                options:{}
+            });
+        } else {
+            $('#logsBox').text('Recording Started');
+        }
+        FinalData = {};
+      });
+}
+
 function attachEvents(webview){
 
+    window.electronAPI.onHelperMessage(message => {
+        const output = 'output:';
+        if (message.startsWith(output)) {
+            let code = message.substr(output.length)
+            $('#outputDir').val(code);
+        }
+    });
     window.electronAPI.onStatusMessage(value => {
-        $('#Status').text(value);
+        $('#logsBox').text(value);
     });
 
     webview.on('dom-ready', () => {
@@ -38,9 +107,9 @@ function attachEvents(webview){
             $('#code').text(code);
         }
         if (message.startsWith(move)) {
-            let code = message.substr(move.length)
-            addToRecording(move,JSON.parse(code));
-            $('#code').text(code);
+            let code = JSON.parse(message.substr(move.length))
+            addToRecording(move,code);
+            $('#code').text(` ${code.x},${code.y}`);
         }
         
     });
