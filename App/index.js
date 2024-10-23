@@ -5,6 +5,7 @@ $(document).ready(() => {
 
   attachUIButtons(webview);
   attachEvents(webview);
+  window.electronAPI.getMessages();
 })
 
 function removeActive(){
@@ -103,23 +104,45 @@ function attachEvents(webview){
         const click = 'click:';
         const move = 'move:';
         if (message.startsWith(click)) {
-            let code = message.substr(click.length)
-            $('#code').text(code);
+            showMask();
+            let code = JSON.parse(message.substr(click.length))
+            addToRecording('mouse',{...code, type:'click'});
+            $('#code').text('click detected');
         }
         if (message.startsWith(move)) {
             let code = JSON.parse(message.substr(move.length))
-            addToRecording(move,code);
-            $('#code').text(` ${code.x},${code.y}`);
+            addToRecording('mouse',{...code,type:'move'});
+            $('#code').text(`${code.x},${code.y}`);
         }
         
     });
 }
 
+async function showMask(){
+    if(recording){
+        let counter = 5;
+        let microCounter = 0;
+        $('.counterText').text('5');
+        $('.mask').css({display:'flex'});
+        while(counter > 0){
+            await new Promise(r => setTimeout(r,55));
+            microCounter+=1;
+            let data = FinalData.mouse[FinalData.mouse.length-1];
+            addToRecording('mouse',{...data, type:'move'});
+            if(microCounter > 20){
+                $('.counterText').text(--counter);
+                microCounter = 0;
+            }
+
+        }
+        $('.mask').hide();
+    }
+}
+
+
 let addToRecording = throttle(function(type,data){
     if(recording){
-        if(type==='move:'){
-            FinalData.mouse ??= [];
-            FinalData.mouse.push(data)
-        }
+            FinalData[type] ??= [];
+            FinalData[type].push(data)
     }
-},100);
+},50);

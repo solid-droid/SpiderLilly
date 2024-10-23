@@ -5,7 +5,7 @@ const { join } = require('path');
 class FsHandler {
     async init(outputFolder) {
         this.outputFolder = outputFolder;
-        this.videoFilename = join(this.outputFolder, Date.now() + '.webm');
+        this.videoFilename = join(this.outputFolder, 'screenRecording' + '.mp4');
         this.imagesPath = join(this.outputFolder, 'images');
         this.imagesFilename = join(this.outputFolder, 'images.txt');
         await this.verifyPathExists(this.outputFolder);
@@ -33,10 +33,10 @@ class FsHandler {
 
     async clearImagesInPath(imagesPath) {
         const files = await readdir(imagesPath);
-        console.log(`Removing files in ${imagesPath}`);
+        // console.log(`Removing files in ${imagesPath}`);
         for (const file of files) {
             const filename = join(imagesPath, file);
-            console.log(`Removing file ${filename}`);
+            // console.log(`Removing file ${filename}`);
             await unlink(filename);
         }
     }

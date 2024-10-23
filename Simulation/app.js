@@ -24,9 +24,14 @@ async function runSimulation(event, {data={}, url='',options={}, output=''}) {
     }
     await recorder.init(page, dir);
     await recorder.start();
-    await page.$('.octicon octicon-mark-github');
+    await new Promise(r => setTimeout(r, 1000));
     for await(let item of data.mouse){
-      await page.mouse.move(item.x+offsetX,item.y+offsetY);
+      if(item.type === 'move'){
+        await page.mouse.move(item.x+offsetX,item.y+offsetY);
+      }
+      if(item.type === 'click'){
+        await page.mouse.click(item.x+offsetX,item.y+offsetY);
+      }
       await new Promise(r => setTimeout(r, 50));
     };
     await recorder.stop();

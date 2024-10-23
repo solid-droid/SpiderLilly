@@ -35,7 +35,7 @@ class PuppeteerVideoRecorder {
             '-safe 0',
             `-i ${imagesFilename}`,
             '-framerate 10',
-            videoFilename.replace('webm','mp4')
+            videoFilename
         ].join(' ');
     }
 

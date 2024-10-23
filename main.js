@@ -4,6 +4,27 @@ app.isPackaged || require('electron-reloader')(module);
 const path = require('node:path')
 let win;
 
+function debounce(cb, delay = 1000) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => {
+      cb(...args)
+    }, delay)
+  }
+}
+
+
+let onUILoad = debounce((win,message)=>{
+  if(message){
+    win.webContents.send('statusMessage', message);
+    message = null;
+  }
+  win.webContents.send('helper', 'output:'+path.join(__dirname,'\\output'));
+}, 1000);
+
+
+
 function createWindow() {
   win = new BrowserWindow({
     width: 1390, 
@@ -26,19 +47,26 @@ function createWindow() {
   win.on('closed', () => {
     win = null
   });
+
+  let message;
+
   ipcMain.on('runSimulation', async (...args)=>{
-    win.webContents.send('statusMessage', 'Simulation started');
-    let message = await runSimulation(...args);
-    setTimeout(() => win.webContents.send('statusMessage', message? message :'Simulation completed'), 1000);
-    setTimeout(()=>{win.webContents.send('helper', 'output:'+path.join(__dirname,''))},1000);
+    win.webContents.send('statusMessage', 'Processing');
+    message = await runSimulation(...args);
+    message = message? message :'Recording Success';
+    win.webContents.send('statusMessage', message)
   });
 
-  setTimeout(()=>{
-    win.webContents.send('helper', 'output:'+path.join(__dirname,'')+'\\Output')
-  },1000);
-  
+
+  ipcMain.on('getMessages', async (...args)=>{
+    //this line gets called multiple times , use debounce.
+    onUILoad(win,message);
+  });
+
   beginPuppet();
 }
+
+
 
 app.on('ready', createWindow)
 

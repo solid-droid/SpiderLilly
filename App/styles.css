@@ -10,11 +10,41 @@ body{
 }
 .testCode{
     bottom:0;
-    left: 5px;
+    left: 10px;
     position: fixed;
     display: flex;
     align-items: center;
 }
+
+.mask{
+    display: none;
+    position: fixed;
+    width: 1344px;
+    height: 756px;
+    top: 110px;
+    left:15px;
+    backdrop-filter: blur(5px);
+    background-color: rgba(116, 116, 116, 0.301);
+    font-size: 20px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .maskText{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        background-color: rgba(46, 46, 46, 0.808);
+        user-select: none; 
+        .counterText{
+            font-size: 50px;
+        }
+    }
+}
+
 .container{
     height: 100%;
     display: grid;
