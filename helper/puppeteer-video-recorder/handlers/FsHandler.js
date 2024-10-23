@@ -3,9 +3,9 @@ const { openSync, closeSync, existsSync } = require('fs');
 const { join } = require('path');
 
 class FsHandler {
-    async init(outputFolder) {
+    async init(outputFolder , videoFilename) {
         this.outputFolder = outputFolder;
-        this.videoFilename = join(this.outputFolder, 'screenRecording' + '.mp4');
+        this.videoFilename = join(this.outputFolder, videoFilename + '.mp4');
         this.imagesPath = join(this.outputFolder, 'images');
         this.imagesFilename = join(this.outputFolder, 'images.txt');
         await this.verifyPathExists(this.outputFolder);

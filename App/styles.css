@@ -10,7 +10,7 @@ body{
 }
 .testCode{
     bottom:0;
-    left: 10px;
+    left: 15px;
     position: fixed;
     display: flex;
     align-items: center;
@@ -156,14 +156,20 @@ body{
 
         }
     }
-    .WebView-Container{
+    #WebView-Container{
         padding-top: 10px;
         width: 100vw;
         overflow: auto;
         div{
             display: grid;
             grid-template-columns: 1fr auto 1fr;
-            .webview{
+            #web{
+                outline: 1px solid rgb(95, 95, 95);
+                width: 1344px;
+                height: 756px;
+            }
+            #player{
+                display: none;
                 outline: 1px solid rgb(95, 95, 95);
                 width: 1344px;
                 height: 756px;

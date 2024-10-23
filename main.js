@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain  } = require('electron');
 const {beginPuppet, runSimulation } = require('./Simulation/app');
-app.isPackaged || require('electron-reloader')(module);
+// app.isPackaged || require('electron-reloader')(module);
 const path = require('node:path')
 let win;
 

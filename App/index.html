@@ -43,24 +43,29 @@
               <div id="logsBox"></div>
            </div>
         </div>
-        <div class="WebView-Container">
+        <div id="WebView-Container">
                 <div>
                     <div></div>
                     <webview id="web" 
                     src="https://o9solutions.com/" 
                     class="webview"
                     preload="./preload.js"></webview>
+                    <video id="player" src="" controls></video>
                     <div></div>
                 </div>
         </div>
     </div>
-    <div class="mask">
+    <div id="mask1" class="mask">
+      <div class="maskText">
+        <div>No Recording Available. </div>
+      </div>
+    </div>
+    <div id="mask2" class="mask">
         <div class="maskText">
           <div>Registring Click</div>
           <div>Please give enough buffer time for next screen to load.</div>
           <div class="counterText">5</div>
         </div>
-        
     </div>
     <div class="testCode">
       <pre id="code"></pre>

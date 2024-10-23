@@ -1,5 +1,8 @@
 let recording = false;
 let FinalData = {};
+let mouseMove, mouseClick;
+let recordingName;
+
 $(document).ready(() => {
   const webview = $('#web')
 
@@ -16,10 +19,13 @@ function removeActive(){
     $('#viewButton').hide();
     $('#recButton').hide();
     $('#penButton').hide();
+    showReporterMask(false);
 }
 
-function getURL(){
-    let url = $('#urlInput').val();
+function getURL(url){
+    if(!url){
+        url = $('#urlInput').val();
+    }
 
     if(!(url.startsWith('http://') || url.startsWith('https://'))){
         url = 'https://'+ url;
@@ -32,7 +38,19 @@ function getOutputPath(){
     return $('#outputDir').val();
 }
 
+function showReporterMask(show = true){
+    if(show){
+        $('#mask1').css({
+            display:'flex'
+        });
+    } else{
+        $('#mask1').hide();
+    }
+
+}
+
 function attachUIButtons(webview){
+    let recordingURL; 
     $('#goButton').on('click', ()=>{
         webview[0].loadURL(getURL())
     });
@@ -56,6 +74,8 @@ function attachUIButtons(webview){
             removeActive();
             $('#recModeButton').addClass('active');
             $('#recButton').show();
+            $('#web').show();
+            $('#player').hide();
         }
     });
 
@@ -64,20 +84,32 @@ function attachUIButtons(webview){
             removeActive();
             $('#highlightModeButton').addClass('active');
             $('#penButton').show();
+            $('#web').hide();
+            $('#player').attr('src',getOutputPath()+'\\'+recordingName+'.mp4')
+            $('#player').show();
+            if(!recordingName || $('#logsBox').text() !== 'Recording Success'){
+                showReporterMask();
+            }
         }
     });
+
 
     $('#recButton').on('click',()=>{
         recording = !recording;
         if(!recording){
+            FinalData = optimizeRecording(FinalData)
             window.electronAPI.runSimulation({
-                url:getURL(),
+                url:recordingURL,
                 data:FinalData,
+                recordingName:recordingName,
                 output:getOutputPath(),
                 options:{}
             });
         } else {
             $('#logsBox').text('Recording Started');
+            recordingURL = webview[0].getURL();
+            recordingName = Date.now();
+            beginRecording();
         }
         FinalData = {};
       });
@@ -99,50 +131,74 @@ function attachEvents(webview){
     webview.on('dom-ready', () => {
         webview[0].setZoomFactor(0.7);
     });
-
     webview[0].addEventListener('console-message', ({ message = '' }) => {
         const click = 'click:';
         const move = 'move:';
         if (message.startsWith(click)) {
-            showMask();
+            showClickMask();
             let code = JSON.parse(message.substr(click.length))
-            addToRecording('mouse',{...code, type:'click'});
+            mouseClick = {...code, type:'click'};
             $('#code').text('click detected');
         }
         if (message.startsWith(move)) {
             let code = JSON.parse(message.substr(move.length))
-            addToRecording('mouse',{...code,type:'move'});
+            mouseMove = {...code,type:'move'};
             $('#code').text(`${code.x},${code.y}`);
         }
         
     });
 }
 
-async function showMask(){
+async function showClickMask(){
     if(recording){
         let counter = 5;
         let microCounter = 0;
         $('.counterText').text('5');
-        $('.mask').css({display:'flex'});
+        $('#mask2').css({display:'flex'});
         while(counter > 0){
             await new Promise(r => setTimeout(r,55));
             microCounter+=1;
-            let data = FinalData.mouse[FinalData.mouse.length-1];
-            addToRecording('mouse',{...data, type:'move'});
             if(microCounter > 20){
                 $('.counterText').text(--counter);
                 microCounter = 0;
             }
 
         }
-        $('.mask').hide();
+        $('#mask2').hide();
     }
 }
 
 
-let addToRecording = throttle(function(type,data){
-    if(recording){
-            FinalData[type] ??= [];
-            FinalData[type].push(data)
+async function beginRecording (){
+    while(recording){
+        FinalData.mouse ??= [];
+        if(mouseClick){
+            FinalData.mouse.push(mouseClick);
+            mouseClick = null;
+        }
+        if(mouseMove){
+            FinalData.mouse.push(mouseMove);
+        }
+        await new Promise(r => setTimeout(r, 50));
     }
-},50);
+}
+
+function optimizeRecording(data){
+    let mouse = [], prevX, prevY, prevType;
+    data?.mouse.forEach(item => {
+        if(!mouse.length){
+            mouse.push(item);
+        }
+        if(prevX === item.x && prevY === item.y && prevType === item.type){
+            mouse[mouse.length-1].count ??= 0;
+            mouse[mouse.length-1].count += 1;
+        } else {
+            prevX = item.x;
+            prevY = item.y;
+            prevType = item.type
+            mouse.push(item);
+        }
+    });
+    data.mouse = mouse;
+    return data;
+}
