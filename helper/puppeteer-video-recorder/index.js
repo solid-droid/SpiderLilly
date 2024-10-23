@@ -30,7 +30,7 @@ class PuppeteerVideoRecorder {
     get defaultFFMpegCommand() {
         const { imagesFilename, videoFilename } = this.fsHandler;
         return [
-            'C:\\Files\\ffmpeg\\bin\\ffmpeg.exe',
+            '.\\ffmpeg\\bin\\ffmpeg.exe',
             '-f concat',
             '-safe 0',
             `-i ${imagesFilename}`,
