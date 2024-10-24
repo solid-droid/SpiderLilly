@@ -1,7 +1,8 @@
 const { app, BrowserWindow, ipcMain  } = require('electron');
 const {beginPuppet, runSimulation } = require('./Simulation/app');
 // app.isPackaged || require('electron-reloader')(module);
-const path = require('node:path')
+const path = require('node:path');
+var fs = require('fs');
 let win;
 
 function debounce(cb, delay = 1000) {
@@ -20,7 +21,15 @@ let onUILoad = debounce((win,message)=>{
     win.webContents.send('statusMessage', message);
     message = null;
   }
-  win.webContents.send('helper', 'output:'+path.join(__dirname,'\\output'));
+  let configPath = path.join(__dirname,'\\config.json');
+  let outputPath = path.join(__dirname,'\\output');
+  win.webContents.send('helper', 'output:'+outputPath);
+  win.webContents.send('helper', 'config:'+configPath);
+  if(!fs.existsSync(configPath)){
+    fs.writeFileSync(configPath, '{}' );
+  }
+  const data = fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' });
+  win.webContents.send('helper', 'configData:'+data);
 }, 1000);
 
 
@@ -28,12 +37,10 @@ let onUILoad = debounce((win,message)=>{
 function createWindow() {
   win = new BrowserWindow({
     width: 1390, 
-    height: 935,
+    height: 700,
     minWidth:1390,
-    maxWidth: 1390,
-    minHeight: 935,
-    maxHeight:935,
-    maximizable:false,
+    minHeight: 700,
+    maximizable:true,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

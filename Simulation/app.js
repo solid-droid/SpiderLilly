@@ -4,16 +4,22 @@ const PuppeteerVideoRecorder = require('../helper/puppeteer-video-recorder/index
 const path = require('node:path');
 var fs = require('fs');
 let browser, page;
+let progress = 0;
 
 async function beginPuppet() {
-    browser = await puppeteer.launch({headless:'shell'});
+    browser = await puppeteer.launch({
+      // headless:false,
+      // headless:true,
+      headless:'shell'
+    });
     page = await browser.newPage();
     await installMouseHelper(page);
 }
-async function runSimulation(event, {data={}, url='',options={}, output='', recordingName='screenRecording'}) {
+async function runSimulation(event, {data={}, url='',configFile={}, output='', recordingName='screenRecording'}) {
   try {
-    let offsetX = options.offsetX || 0;
-    let offsetY = options.offsetY || 0;
+    url = url.trim();
+    let offsetX = configFile.offsetX || 0;
+    let offsetY = configFile.offsetY || 0;
     await page.goto(url);
     await page.setViewport({width: 1920, height: 1080});
     await new Promise(r => setTimeout(r, 1000));
@@ -25,7 +31,8 @@ async function runSimulation(event, {data={}, url='',options={}, output='', reco
     }
     await recorder.init(page, dir, recordingName);
     await recorder.start();
-    await userSimulation(page, data, offsetX, offsetY)
+    await initScript(configFile , page , url);
+    await userSimulation(page, data, offsetX, offsetY);
     await recorder.stop();
 
   } catch(e) {
@@ -33,9 +40,27 @@ async function runSimulation(event, {data={}, url='',options={}, output='', reco
   }
 }
 
+async function initScript(configFile , page, url){
+  if(configFile.init?.script?.length && configFile?.init?.url?.includes(url) ){
+    for await (const item of configFile.init.script) {
+        await runScript(item, page);
+    }
+  }
+}
+
+async function runScript(data, page){
+  switch(data.action){
+    case 'type' : await page.type(data.selector , data.value);
+    break;
+    case 'click' : await page.click(data.selector);
+    break;
+    case 'wait' : await new Promise(r => setTimeout(r, data.value));
+  }
+}
+
 async function userSimulation(page, data, offsetX, offsetY) {
   ///mouse simulation/////////////
-  for await(let item of data.mouse){
+  for await(const item of data.mouse){
     if(item.count){
       let i = 0;
       while(i < item.count){
@@ -55,9 +80,6 @@ async function mouseEvents(page, item, offsetX, offsetY) {
   }
   if(item.type === 'click'){
     await page.mouse.click(item.x+offsetX,item.y+offsetY);
-    await page.waitForNavigation({
-      waitUntil: 'networkidle0',
-    });
   }
   await new Promise(r => setTimeout(r, 50));
 }

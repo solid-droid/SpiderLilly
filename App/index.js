@@ -2,6 +2,7 @@ let recording = false;
 let FinalData = {};
 let mouseMove, mouseClick;
 let recordingName;
+let configFile={};
 
 $(document).ready(() => {
   const webview = $('#web')
@@ -49,8 +50,32 @@ function showReporterMask(show = true){
 
 }
 
+function scriptToCode(script){
+    let code ='(async function(){';
+    script.forEach(x => {
+        switch (x.action){
+            case 'type': code +=`document.querySelector("${x.selector}").value = "${x.value}";`;
+            break;
+            case 'click': code +=`document.querySelector("${x.selector}").click();`;
+            break;
+            case 'wait': code+=`await new Promise(r => setTimeout(r, "${x.value}"));`;
+            break;
+        }
+    });
+    code += '})();';
+    console.log(code);
+    return code;
+}
+
 function attachUIButtons(webview){
     let recordingURL; 
+    $('#scriptButton').on('click', ()=>{
+        if(configFile?.init?.script?.length && configFile?.init?.url?.includes(webview[0].getURL())){
+            const code = scriptToCode(configFile.init.script);
+            webview[0].executeJavaScript(code);
+        }
+    });
+
     $('#goButton').on('click', ()=>{
         webview[0].loadURL(getURL())
     });
@@ -67,6 +92,8 @@ function attachUIButtons(webview){
             $('#testButton').addClass('active');
             $('#compareButton').show();
             $('#viewButton').show();
+        }else{
+            removeActive();
         }
     });
     $('#recModeButton').on('click', () => {
@@ -76,6 +103,8 @@ function attachUIButtons(webview){
             $('#recButton').show();
             $('#web').show();
             $('#player').hide();
+        } else{
+            removeActive();
         }
     });
 
@@ -90,6 +119,8 @@ function attachUIButtons(webview){
             if(!recordingName || $('#logsBox').text() !== 'Recording Success'){
                 showReporterMask();
             }
+        }else{
+            removeActive();
         }
     });
 
@@ -102,8 +133,8 @@ function attachUIButtons(webview){
                 url:recordingURL,
                 data:FinalData,
                 recordingName:recordingName,
+                configFile:configFile,
                 output:getOutputPath(),
-                options:{}
             });
         } else {
             $('#logsBox').text('Recording Started');
@@ -119,9 +150,18 @@ function attachEvents(webview){
 
     window.electronAPI.onHelperMessage(message => {
         const output = 'output:';
+        const config = 'config:';
+        const configData ='configData:'
         if (message.startsWith(output)) {
             let code = message.substr(output.length)
             $('#outputDir').val(code);
+        }
+        if (message.startsWith(config)) {
+            let code = message.substr(config.length)
+            $('#configFilePath').val(code);
+        }
+        if (message.startsWith(configData)) {
+            configFile = JSON.parse(message.substr(configData.length));
         }
     });
     window.electronAPI.onStatusMessage(value => {
@@ -129,7 +169,13 @@ function attachEvents(webview){
     });
 
     webview.on('dom-ready', () => {
-        webview[0].setZoomFactor(0.7);
+        let zoomFactor = $('#web').width()/1920;
+        webview[0].setZoomFactor(zoomFactor);
+        new ResizeObserver(() => {
+            let zoomFactor = $('#web').width()/1920;
+            webview[0].setZoomFactor(zoomFactor);
+          }).observe(document.body)
+
     });
     webview[0].addEventListener('console-message', ({ message = '' }) => {
         const click = 'click:';

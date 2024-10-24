@@ -1,0 +1,28 @@
+{
+    "init":{
+        "url":[
+                "http://localhost:14223/Kibo2/Account/Login?returnUrl=/Kibo2",
+                "http://localhost:14223/Kibo2#/dssd/dssdc/sdcds"
+            ],
+        "script":[
+            {
+                "action":"type",
+                "selector":"#Username",
+                "value":"shira@unittest.com"
+            },
+            {
+                "action":"type",
+                "selector":"#Password",
+                "value":"Hello World2"
+            },
+            {
+                "action":"click",
+                "selector":"#loginButton"
+            },
+            {
+                "action":"wait",
+                "value":"5000"
+            }
+        ]
+    }
+}

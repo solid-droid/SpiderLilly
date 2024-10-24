@@ -32,4 +32,8 @@
     &:focus{
         outline: rgb(110, 110, 110) 1px solid;
     }
+    &:disabled{
+        background-color: rgb(18, 18, 18);
+        color: rgb(102, 102, 102);
+    }
 }
