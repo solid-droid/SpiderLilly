@@ -15,7 +15,7 @@ async function beginPuppet() {
     page = await browser.newPage();
     await installMouseHelper(page);
 }
-async function runSimulation(event, {data={}, url='',configFile={}, output='', recordingName='screenRecording'}) {
+async function runSimulation(event, {data={}, url='',configFile={}, output='', recordingName='screenRecording'}, win, sendStatus) {
   try {
     url = url.trim();
     let offsetX = configFile.offsetX || 0;
@@ -31,8 +31,11 @@ async function runSimulation(event, {data={}, url='',configFile={}, output='', r
     }
     await recorder.init(page, dir, recordingName);
     await recorder.start();
+    sendStatus(win, 'Simulation Started');
     await initScript(configFile , page , url);
+    sendStatus(win, 'Init Script Completed, running user events');
     await userSimulation(page, data, offsetX, offsetY);
+    sendStatus(win, 'Simulation completed, creating video');
     await recorder.stop();
 
   } catch(e) {
@@ -81,7 +84,7 @@ async function mouseEvents(page, item, offsetX, offsetY) {
   if(item.type === 'click'){
     await page.mouse.click(item.x+offsetX,item.y+offsetY);
   }
-  await new Promise(r => setTimeout(r, 50));
+  await new Promise(r => setTimeout(r, 10));
 }
 
 

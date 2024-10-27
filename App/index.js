@@ -184,7 +184,7 @@ function attachEvents(webview){
             showClickMask();
             let code = JSON.parse(message.substr(click.length))
             mouseClick = {...code, type:'click'};
-            $('#code').text('click detected');
+            $('#code').text(`${code.x},${code.y} | click : ${code.target}`);
         }
         if (message.startsWith(move)) {
             let code = JSON.parse(message.substr(move.length))
@@ -197,9 +197,9 @@ function attachEvents(webview){
 
 async function showClickMask(){
     if(recording){
-        let counter = 5;
+        let counter = 2;
         let microCounter = 0;
-        $('.counterText').text('5');
+        $('.counterText').text('2');
         $('#mask2').css({display:'flex'});
         while(counter > 0){
             await new Promise(r => setTimeout(r,55));

@@ -30,7 +30,7 @@ let onUILoad = debounce((win,message)=>{
   }
   const data = fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' });
   win.webContents.send('helper', 'configData:'+data);
-}, 1000);
+}, 500);
 
 
 
@@ -58,15 +58,14 @@ function createWindow() {
   let message;
 
   ipcMain.on('runSimulation', async (...args)=>{
-    win.webContents.send('statusMessage', 'Processing');
-    message = await runSimulation(...args);
+    sendStatus(win, 'Processing')
+    message = await runSimulation(...args, win, sendStatus);
     message = message? message :'Recording Success';
-    win.webContents.send('statusMessage', message)
+    sendStatus(win, message)
   });
 
 
   ipcMain.on('getMessages', async (...args)=>{
-    //this line gets called multiple times , use debounce.
     onUILoad(win,message);
   });
 
@@ -74,7 +73,9 @@ function createWindow() {
 }
 
 
-
+function sendStatus(win,message){
+  win.webContents.send('statusMessage', message)
+}
 app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {

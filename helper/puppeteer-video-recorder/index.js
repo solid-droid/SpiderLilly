@@ -34,7 +34,7 @@ class PuppeteerVideoRecorder {
             '-f concat',
             '-safe 0',
             `-i ${imagesFilename}`,
-            '-framerate 10',
+            '-framerate 60',
             videoFilename
         ].join(' ');
     }
