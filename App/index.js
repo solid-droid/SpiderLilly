@@ -1,4 +1,6 @@
 let recording = false;
+let highlightRec = false;
+let overlayHighlight = false;
 let FinalData = {};
 let mouseMove, mouseClick;
 let recordingName;
@@ -9,6 +11,7 @@ $(document).ready(() => {
 
   attachUIButtons(webview);
   attachEvents(webview);
+  attachCanvasEvents();
   window.electronAPI.getMessages();
 })
 
@@ -19,7 +22,7 @@ function removeActive(){
     $('#compareButton').hide();
     $('#viewButton').hide();
     $('#recButton').hide();
-    $('#penButton').hide();
+    $('.highlightButtonGroup').hide();
     showReporterMask(false);
 }
 
@@ -86,6 +89,15 @@ function attachUIButtons(webview){
         }
       })
 
+    $('#compareButton').on('click', ()=>{
+        configFile.highlights = highlights;
+        window.electronAPI.compare({
+            configFile:configFile,
+            output:getOutputPath(),
+            zoomFactor:1920/$('#web').width()
+        });
+    });
+
     $('#testButton').on('click', () => {
         if(!$('#testButton').hasClass('active')){
             removeActive();
@@ -93,7 +105,7 @@ function attachUIButtons(webview){
             $('#compareButton').show();
             $('#viewButton').show();
         }else{
-            removeActive();
+            // removeActive();
         }
     });
     $('#recModeButton').on('click', () => {
@@ -103,32 +115,63 @@ function attachUIButtons(webview){
             $('#recButton').show();
             $('#web').show();
             $('#player').hide();
+            $('#canvas').hide();
         } else{
-            removeActive();
+            // removeActive();
         }
     });
 
     $('#highlightModeButton').on('click', () => {
         if(!$('#highlightModeButton').hasClass('active')){
             removeActive();
+            let status = $('#logsBox').text();
             $('#highlightModeButton').addClass('active');
-            $('#penButton').show();
+            $('.highlightButtonGroup').css({
+                'display':'flex'
+            });
             $('#web').hide();
+            ///testing
+            recordingName = '1731804810478';
+            status = 'Recording Success';
+            ///
             $('#player').attr('src',getOutputPath()+'\\'+recordingName+'.mp4')
             $('#player').show();
-            if(!recordingName || $('#logsBox').text() !== 'Recording Success'){
+            $('#canvas').show();
+            if(!recordingName ||  status !== 'Recording Success'){
                 showReporterMask();
             }
         }else{
-            removeActive();
+            // removeActive();
         }
     });
 
+    
+    $('#penButton').on('click',()=>{
+        highlightRec = !highlightRec;
+        if(highlightRec){
+            $('#penButton .blink').show();
+        } else {
+            $('#penButton .blink').hide();
+        }
+    });
+    $('#OverlayButton').on('click',()=>{
+        overlayHighlight = !overlayHighlight;
+        if(overlayHighlight){
+            $('#OverlayButton .enabled').show();
+        } else {
+            $('#OverlayButton .enabled').hide();
+        }
+    });
+
+    $('#clearButton').on('click', ()=>{
+        highlights = [];
+    });
 
     $('#recButton').on('click',()=>{
         recording = !recording;
         if(!recording){
-            FinalData = optimizeRecording(FinalData)
+            $('#recButton .blink').hide();
+            FinalData = optimizeRecording(FinalData);
             window.electronAPI.runSimulation({
                 url:recordingURL,
                 data:FinalData,
@@ -137,6 +180,7 @@ function attachUIButtons(webview){
                 output:getOutputPath(),
             });
         } else {
+            $('#recButton .blink').show();
             $('#logsBox').text('Recording Started');
             recordingURL = webview[0].getURL();
             recordingName = Date.now();
@@ -181,10 +225,10 @@ function attachEvents(webview){
         const click = 'click:';
         const move = 'move:';
         if (message.startsWith(click)) {
-            showClickMask();
             let code = JSON.parse(message.substr(click.length))
             mouseClick = {...code, type:'click'};
             $('#code').text(`${code.x},${code.y} | click : ${code.target}`);
+            // showClickMask();
         }
         if (message.startsWith(move)) {
             let code = JSON.parse(message.substr(move.length))
@@ -225,7 +269,7 @@ async function beginRecording (){
         if(mouseMove){
             FinalData.mouse.push(mouseMove);
         }
-        await new Promise(r => setTimeout(r, 50));
+        await new Promise(r => setTimeout(r, 30));
     }
 }
 

@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain  } = require('electron');
 const {beginPuppet, runSimulation } = require('./Simulation/app');
+const {compareHighlights} = require('./ImageProcessing/app');
 // app.isPackaged || require('electron-reloader')(module);
 const path = require('node:path');
 var fs = require('fs');
@@ -36,11 +37,12 @@ let onUILoad = debounce((win,message)=>{
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 1390, 
-    height: 700,
+    // width: 1390, 
+    // height: 700,
     minWidth:1390,
     minHeight: 700,
     maximizable:true,
+    show:false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -48,9 +50,11 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js')
     }
   })
+  win.maximize();
   win.removeMenu();
+  win.show();
   win.loadFile('App/index.html')
-  // win.webContents.openDevTools()
+  win.webContents.openDevTools()
   win.on('closed', () => {
     win = null
   });
@@ -59,11 +63,13 @@ function createWindow() {
 
   ipcMain.on('runSimulation', async (...args)=>{
     sendStatus(win, 'Processing')
-    message = await runSimulation(...args, win, sendStatus);
-    message = message? message :'Recording Success';
-    sendStatus(win, message)
+    await runSimulation(...args, win, sendStatus);
   });
 
+  ipcMain.on('compare', async (...args)=>{
+    sendStatus(win, 'Comparing')
+    await compareHighlights(...args, win, sendStatus)
+  });
 
   ipcMain.on('getMessages', async (...args)=>{
     onUILoad(win,message);

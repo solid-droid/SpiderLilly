@@ -37,9 +37,10 @@ async function runSimulation(event, {data={}, url='',configFile={}, output='', r
     await userSimulation(page, data, offsetX, offsetY);
     sendStatus(win, 'Simulation completed, creating video');
     await recorder.stop();
+    sendStatus(win, 'Recording Complete');
 
   } catch(e) {
-    return e;
+    sendStatus(win, e);
   }
 }
 
@@ -84,7 +85,7 @@ async function mouseEvents(page, item, offsetX, offsetY) {
   if(item.type === 'click'){
     await page.mouse.click(item.x+offsetX,item.y+offsetY);
   }
-  await new Promise(r => setTimeout(r, 10));
+  await new Promise(r => setTimeout(r, 100));
 }
 
 

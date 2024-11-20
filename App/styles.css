@@ -8,6 +8,14 @@ body{
     overflow: hidden;
     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI Adjusted","Segoe UI","Liberation Sans",sans-serif;
 }
+
+canvas {
+	display: block;
+	margin:20px auto;
+	cursor: crosshair;
+    position: absolute;
+}
+
 .testCode{
     margin-bottom: -12px;
     bottom:0;
@@ -119,7 +127,7 @@ body{
                 .group{
                     display: flex;
                     gap: 3px;
-                    width: 150px;
+                    width: 350px;
                 }
                 .g1{
                     justify-content: right;
@@ -131,7 +139,7 @@ body{
                 .button{
                     border: none;
                 }
-                #recButton ,#penButton{
+                #recButton , .highlightButtonGroup{
                     min-width: 0;
                     width: max-content;
                 }
@@ -140,10 +148,13 @@ body{
                     border-bottom-right-radius: 0;
                     display: none;
                 }
-                #penButton{
+                .highlightButtonGroup{
                     border-top-left-radius:0 ;
                     border-bottom-left-radius: 0;
                     display: none;
+                }
+                #penButton, #clearButton{
+                    border-radius:  0;
                 }
                 #recModeButton{
                     border-top-left-radius:0 ;
@@ -177,6 +188,12 @@ body{
             width: calc(1.8 * (100vh - 120px));
             height: calc(100vh - 120px);
         }
+        #canvas{
+            display: none;
+            width: calc(1.8*(100vh - 120px));
+            height: calc(100vh - 180px);
+            margin-top: -40px;
+        }
     }
 }
 
@@ -184,3 +201,29 @@ body{
     outline: solid 2px rgb(117, 117, 117);
     background-color: rgb(48, 56, 68) !important;
 }
+
+.blink {
+    display: none;
+    width: 6px;
+    height: 6px;
+    background: red;
+    position: absolute;
+    margin-top: -20px;
+    margin-left: 27px;
+    border-radius: 50%;
+    animation: blinker 1s cubic-bezier(.5, 0, 1, 1) infinite alternate;  
+  }
+  .enabled{
+    display: none;
+    width: 6px;
+    height: 6px;
+    background: red;
+    position: absolute;
+    margin-top: -17px;
+    margin-left: 60px;
+    border-radius: 50%;
+  }
+  @keyframes blinker {  
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }

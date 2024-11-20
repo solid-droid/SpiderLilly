@@ -15,9 +15,9 @@
               <input id="configFilePath" class="inputBox" placeholder="Config File Path" disabled/>
               <div class="testControls">
                 <div id="scriptButton" class="button">Run Script</div>
-                <div id="testButton" class="button">DEV</div>
-                <div id="compareButton" class="button">Compare</div>
-                <div id="viewButton" class="button">View Bug</div>
+                <div id="testButton" class="button">BUG</div>
+                <div id="viewButton" class="button">View</div>
+                <div id="compareButton" class="button">Test</div>
               </div>
            </div>
            <div class="controlContainer">
@@ -29,12 +29,14 @@
 
               <div class="controls">
                 <div class="group g1">
-                  <div id="recButton" class="button">Rec</div>
+                  <div id="recButton" class="button">Rec <div class="blink"></div></div>
                   <div id="recModeButton" class="button">RECORD</div>
                 </div>
                 <div class="group">
-                  <div id="highlightModeButton" class="button">REPORT</div>
-                  <div id="penButton" class="button">Pen</div>
+                  <div id="highlightModeButton" class="button">HIGHLIGHT</div>
+                  <div id="penButton" class="button highlightButtonGroup">Rec <div class="blink"></div></div>
+                  <div id="clearButton" class="button highlightButtonGroup">Clear <div class="enabled"></div></div>
+                  <div id="OverlayButton" class="button highlightButtonGroup">Overlay <div class="enabled"></div></div>
                 </div>
               </div>
            </div>
@@ -49,7 +51,8 @@
                       src="http://localhost:14223/Kibo2" 
                       class="webview"
                       preload="./preload.js"></webview>
-                      <video id="player" src="" controls></video>
+                      <video id="player" src="output\1730954828504.mp4" controls></video>
+                      <canvas	id="canvas"></canvas>
                       <div id="mask1" class="mask">
                         <div class="maskText">
                           <div>No Recording Available. </div>
@@ -70,6 +73,7 @@
     </div>
   <script src="../node_modules/jquery/dist/jquery.min.js"></script>
   <script src="../helper/util.js"></script>
+  <script src="./highlight.js"></script>
   <script src="index.js"></script>
 </body>
 
