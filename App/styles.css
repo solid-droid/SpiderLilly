@@ -11,7 +11,7 @@ body{
 .testCode{
     margin-bottom: -12px;
     bottom:0;
-    left: 10px;
+    left: 310px;
     position: fixed;
     display: flex;
     align-items: center;
@@ -51,56 +51,26 @@ body{
 .container{
     height: 100%;
     display: grid;
-    grid-template-rows: 100px 1fr;
+    grid-template-rows: 50px 1fr;
     width: 100%;
     overflow: hidden;
     .Tools-Container{
         display: grid;
-        grid-template-columns: 20vw 1fr 20vw;
-        gap:20px;
+        grid-template-columns: 300px 1fr;
+        gap: 5px;
         padding: 5px;
+        padding-right: 10px;
         border-bottom: solid rgb(95, 95, 95) 1px;
-        #Record{
-            margin: 10px;
+        .Options{
+            background: gray;
         }
-        .ModeContainer{
-            
-        }
-        .TestContainer, .controlContainer, .LogsContainer{
-            display: grid;
-            align-items: center;
-            grid-template-rows: 10px 40px 1fr;
-            .helpText{
-                font-size: 10px;
-                color: rgb(99, 99, 99);
-                font-weight: bold;
-            }
-        }
-        .testControls{
+        .URL{
             display: flex;
-            gap: 5px;
-            #testButton{
-                border-bottom-right-radius: 0;
-                border-top-right-radius: 0;
-            }
-            #compareButton{
-                display: none;
-            }
-            #viewButton{
-                display: none;
-            }
-            .button{
-                height: 25px;
-                box-shadow: none;
-                min-width: 0;
-                width: max-content;
-                border: none;
-            }
-        }
-        .controlContainer{
+            align-items: center;
             .urlBox{
                 display: flex;
                 gap:2px;
+                width: 100%;
                 input{
                     border-bottom-right-radius: 0;
                     border-top-right-radius: 0;
@@ -115,69 +85,45 @@ body{
                     border: none;
                 }
             }
-            .controls{
-                .group{
-                    display: flex;
-                    gap: 3px;
-                    width: 150px;
-                }
-                .g1{
-                    justify-content: right;
-                }
+        }
+    }
+    .body{
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        overflow: hidden;
+        padding: 5px;
+        gap: 5px;
+        .sideNav{
+            background: gray;
+        }
+        #WebView-Container{
+            width: 100%;
+            overflow: auto;
+            display: grid;
+            grid-template-rows: 25px 1fr;
+            justify-content: center;
+            align-items: flex-start;
+            .toggleView{
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                gap: 10px;
-                .button{
-                    border: none;
-                }
-                #recButton ,#penButton{
-                    min-width: 0;
-                    width: max-content;
-                }
-                #recButton{
-                    border-top-right-radius:0 ;
-                    border-bottom-right-radius: 0;
-                    display: none;
-                }
-                #penButton{
-                    border-top-left-radius:0 ;
-                    border-bottom-left-radius: 0;
-                    display: none;
-                }
-                #recModeButton{
-                    border-top-left-radius:0 ;
-                    border-bottom-left-radius: 0;
-                }
-                #highlightModeButton{
-                    border-top-right-radius:0 ;
-                    border-bottom-right-radius: 0;
-                }
+                font-size: 15px;
+                gap: 5px;
+            }
+            #web{
+                outline: 1px solid rgb(95, 95, 95);
+                width: 100%;
+                height: 100%;
+            }
+            #player{
+                display: none;
+                outline: 1px solid rgb(95, 95, 95);
+                width: calc(1.8 * (100vh - 120px));
+                height: calc(100vh - 120px);
             }
         }
-        .LogsContainer{
+    }
 
-        }
-    }
-    #WebView-Container{
-        margin-top: -15px;
-        width: 100vw;
-        overflow: auto;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        #web{
-            outline: 1px solid rgb(95, 95, 95);
-            width: calc(1.8 * (100vh - 120px));
-            height: calc(100vh - 120px);
-        }
-        #player{
-            display: none;
-            outline: 1px solid rgb(95, 95, 95);
-            width: calc(1.8 * (100vh - 120px));
-            height: calc(100vh - 120px);
-        }
-    }
 }
 
 .active{

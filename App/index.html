@@ -10,59 +10,44 @@
 <body>
     <div class="container">
         <div class="Tools-Container">
-           <div class="TestContainer">
-              <div class="helpText">Config File</div>
-              <input id="configFilePath" class="inputBox" placeholder="Config File Path" disabled/>
-              <div class="testControls">
-                <div id="scriptButton" class="button">Run Script</div>
-                <div id="testButton" class="button">DEV</div>
-                <div id="compareButton" class="button">Compare</div>
-                <div id="viewButton" class="button">View Bug</div>
-              </div>
-           </div>
-           <div class="controlContainer">
-              <div class="helpText">URL</div>
+           <div class="Options"></div>
+           <div class="URL">
               <div class="urlBox">
                 <input id="urlInput" class="inputBox" placeholder="Enter Website URL" value="http://localhost:14223/Kibo2"/>
                 <div id="goButton" class="button">GO</div>
               </div>
-
-              <div class="controls">
-                <div class="group g1">
-                  <div id="recButton" class="button">Rec</div>
-                  <div id="recModeButton" class="button">RECORD</div>
-                </div>
-                <div class="group">
-                  <div id="highlightModeButton" class="button">REPORT</div>
-                  <div id="penButton" class="button">Pen</div>
-                </div>
-              </div>
-           </div>
-           <div class="LogsContainer">
-              <div class="helpText">Output</div>
-              <input id="outputDir" class="inputBox" placeholder="Enter Output Dir Path" disabled/>
-              <div id="logsBox"></div>
            </div>
         </div>
-        <div id="WebView-Container">
-                      <webview id="web" 
-                      src="http://localhost:14223/Kibo2" 
-                      class="webview"
-                      preload="./preload.js"></webview>
-                      <video id="player" src="" controls></video>
-                      <div id="mask1" class="mask">
-                        <div class="maskText">
-                          <div>No Recording Available. </div>
-                        </div>
-                      </div>
-                      <div id="mask2" class="mask">
-                          <div class="maskText">
-                            <div>Registring Click</div>
-                            <div>Please give enough buffer time for next screen to load.</div>
-                            <div class="counterText">2</div>
-                          </div>
-                      </div>
+        <div class="body">
+          <div class="sideNav">
+
+          </div>
+          <div id="WebView-Container">
+            <div class="toggleView">
+              <input type="radio" id="viewType" name="viewType" value="Webview">
+              <label for="Webview">Webview</label><br>
+              <input type="radio" id="viewType" name="viewType" value="Player">
+              <label for="Player">Player</label><br>
+            </div>
+            <webview id="web" 
+            src="http://localhost:14223/Kibo2" 
+            class="webview"
+            preload="./preload.js"></webview>
+            <video id="player" src="" controls></video>
+            <div id="mask1" class="mask">
+              <div class="maskText">
+                <div>No Recording Available. </div>
+              </div>
+            </div>
+            <div id="mask2" class="mask">
+                <div class="maskText">
+                  <div>Registring Click</div>
+                  <div>Please give enough buffer time for next screen to load.</div>
+                  <div class="counterText">2</div>
                 </div>
+            </div>
+          </div>
+        </div>
         </div>
     </div>
     <div class="testCode">

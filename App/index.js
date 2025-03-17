@@ -168,13 +168,25 @@ function attachEvents(webview){
         $('#logsBox').text(value);
     });
 
-    webview.on('dom-ready', () => {
+    function setWebviewDim(){
+        let h = $('#WebView-Container').height() - 50;
+        let w = $('#WebView-Container').width() - 30;
+        let ratio = 1920/1080;
+        if(w > h*ratio){
+            $('#web').width(h*ratio);
+            $('#web').height(h);
+        } else {
+            $('#web').width(w);
+            $('#web').height(w/ratio);
+        }
         let zoomFactor = $('#web').width()/1920;
         webview[0].setZoomFactor(zoomFactor);
+    }
+    webview.on('dom-ready', () => {
+        setWebviewDim();
         new ResizeObserver(() => {
-            let zoomFactor = $('#web').width()/1920;
-            webview[0].setZoomFactor(zoomFactor);
-          }).observe(document.body)
+            setWebviewDim();
+        }).observe(document.body)
 
     });
     webview[0].addEventListener('console-message', ({ message = '' }) => {

@@ -50,7 +50,7 @@ function createWindow() {
   })
   win.removeMenu();
   win.loadFile('App/index.html')
-  // win.webContents.openDevTools()
+  win.webContents.openDevTools()
   win.on('closed', () => {
     win = null
   });
